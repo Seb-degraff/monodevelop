@@ -421,7 +421,7 @@ namespace MonoDevelop.Core.Assemblies
 		void SaveUserAssemblyContext ()
 		{
 			List<string> list = new List<string> (userAssemblyContext.Directories);
-			PropertyService.Set ("MonoDevelop.Core.Assemblies.UserAssemblyContext", list);
+			PropertyService.Set ("MonoDevelop.Core.Assemblies.UserAssemblyContext", list.Count != 0 ? list : null);
 			PropertyService.SaveProperties ();
 		}
 
