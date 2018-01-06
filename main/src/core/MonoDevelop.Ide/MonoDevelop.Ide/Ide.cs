@@ -40,6 +40,7 @@ using MonoDevelop.Components.Commands;
 using MonoDevelop.Projects;
 using MonoDevelop.Ide.Gui.Pads;
 using MonoDevelop.Ide.CustomTools;
+using System.IO;
 using System.Linq;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Ide.Desktop;
@@ -297,9 +298,13 @@ namespace MonoDevelop.Ide
 				initializedEvent (null, EventArgs.Empty);
 				initializedEvent = null;
 			}
-			
-			//FIXME: we should really make this on-demand. consumers can display a "loading help cache" message like VS
-			MonoDevelop.Projects.HelpService.AsyncInitialize ();
+
+			// Kick off initializing help on a background thread.
+			// Only attempt on Windows if we can find monodoc.xml (currently not the case).
+			// FIXME: we should really make this on-demand. consumers can display a "loading help cache" message like VS
+			if (!Platform.IsWindows || File.Exists("monodoc.xml")) {
+				MonoDevelop.Projects.HelpService.AsyncInitialize ();
+			}
 			
 			UpdateInstrumentationIcon ();
 			IdeApp.Preferences.EnableInstrumentation.Changed += delegate {
